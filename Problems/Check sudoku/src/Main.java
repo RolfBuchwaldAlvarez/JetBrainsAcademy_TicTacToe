@@ -3,86 +3,48 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int dimension = scanner.nextInt();
-        int squareNum = dimension * dimension;
-        int[][] matrix = new int[squareNum][squareNum];
-        for (int i = 0; i < squareNum; i++) {
-            for (int j = 0; j < squareNum; j++) {
+        int n = scanner.nextInt();
+        int nSquare = n * n;
+        int sum1ToNSquare = nSquare * (nSquare + 1) / 2;
+        int[][] matrix = new int[nSquare][nSquare];
+        for (int i = 0; i < nSquare; i++) {
+            for (int j = 0; j < nSquare; j++) {
                 matrix[i][j] = scanner.nextInt();
             }
         }
-        int sumOfArray = 0;
-        int compareValue = 0;
-        for (int i = 1; i <= squareNum; i++) {
-            compareValue += i;
-        }
-        boolean isSolved = checkRowsNCols(squareNum, matrix, sumOfArray, compareValue) && checkSquares(dimension, squareNum, matrix, sumOfArray, compareValue);
+        boolean isSolved = checkRowsNCols(matrix, nSquare, sum1ToNSquare)
+            && checkSquares(n, matrix, nSquare, sum1ToNSquare);
         System.out.println(isSolved ? "YES" : "NO");
     }
 
-    public static boolean checkRowsNCols(int squareNum, int[][] matrix, int sumOfArray, int compareValue) {
+    private static boolean checkRowsNCols(int[][] matrix, int nSquare, int sum1ToNSquare) {
         boolean isSolved = true;
-        for (int i = 0; i < squareNum; i++) {
-            for (int x : matrix[i]) {
-                sumOfArray += x;
+        for (int i = 0; i < nSquare && isSolved; i++) {
+            int sumRow = 0;
+            int sumColumn = 0;
+            for (int j = 0; j < nSquare; j++) {
+                sumRow += matrix[i][j];
+                sumColumn += matrix[j][i];
             }
-            if (sumOfArray != compareValue) {
+            if (sumRow != sum1ToNSquare || sumColumn != sum1ToNSquare) {
                 isSolved = false;
-                break;
             }
-            sumOfArray = 0;
-        }
-
-        for (int i = 0; i < squareNum; i++) {
-            for (int j = 0; j < squareNum; j++) {
-                sumOfArray += matrix[j][i];
-            }
-            if (sumOfArray != compareValue) {
-                isSolved = false;
-                break;
-            }
-            sumOfArray = 0;
         }
         return isSolved;
     }
 
-    public static boolean checkSquares(int dimension, int squareNum, int[][] matrix, int sumOfArray, int compareValue) {
+    private static boolean checkSquares(int n, int[][] matrix, int nSquare, int sum1ToNSquare) {
         boolean isSolved = true;
-        int limitI = dimension;
-        int limitJ = dimension;
-        for (int i = 0; i < limitI; i++) {
-            for (int j = 0; j < limitJ; j++) {
-                sumOfArray += matrix[i][j];
-                if (i == squareNum - 1 && j == squareNum - 1) {
-                    if (sumOfArray != compareValue) {
-                        isSolved = false;
-                        break;
+        for (int l = 0; l < nSquare && isSolved; l += n) {
+            for (int k = 0; k < nSquare && isSolved; k += n) {
+                int sumSquare = 0;
+                for (int i = l; i < l + n; i++) {
+                    for (int j = k; j < k + n; j++) {
+                        sumSquare += matrix[i][j];
                     }
-                    break;
-                } else if (i == limitI - 1 && j == limitJ - 1 && limitI == squareNum && limitJ != squareNum) {
-                    if (sumOfArray != compareValue) {
-                        isSolved = false;
-                        break;
-                    }
-                    i = squareNum - dimension;
-                    limitJ += dimension;
-                    sumOfArray = 0;
-                } else if (i == limitI - 1 && j == limitJ - 1 && limitI != squareNum && limitJ == squareNum) {
-                    if (sumOfArray != compareValue) {
-                        isSolved = false;
-                        break;
-                    }
-                    j = 0;
-                    limitI += dimension;
-                    sumOfArray = 0;
-                } else if ( i == limitI - 1 && j == limitJ - 1 && limitI != squareNum - 1 && limitJ != squareNum - 1) {
-                    if (sumOfArray != compareValue) {
-                        isSolved = false;
-                        break;
-                    }
-                    i = squareNum - dimension;
-                    limitJ += dimension;
-                    sumOfArray = 0;
+                }
+                if (sumSquare != sum1ToNSquare) {
+                    isSolved = false;
                 }
             }
         }

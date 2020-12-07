@@ -6,7 +6,7 @@ class Main {
         int n = sc.nextInt();
         int[][] matrix = new int[n][n];
 
-        fillOddSquareMatrix(n, matrix);
+        fillSquareMatrix(n, matrix);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -16,7 +16,7 @@ class Main {
         }
     }
 
-    public static void fillOddSquareMatrix(int n, int[][] matrix) {
+    public static void fillSquareMatrix(int n, int[][] matrix) {
         int matrixRowMax = n - 1;
         int matrixColMax = n - 1;
         int matrixRowMin = 0;

@@ -4,46 +4,48 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
+        String input = "_________";
         boolean gameOver = false;
 
-        System.out.println("Enter cells: " + input);
-
         System.out.println("---------");
         System.out.println("| " + input.charAt(0) + " " + input.charAt(1) + " " + input.charAt(2) + " |");
         System.out.println("| " + input.charAt(3) + " " + input.charAt(4) + " " + input.charAt(5) + " |");
         System.out.println("| "+ input.charAt(6) + " " + input.charAt(7) + " " + input.charAt(8) + " |");
         System.out.println("---------");
 
-        boolean inputCorrect = false;
+        while (!gameOver) {
+            boolean inputCorrect = false;
 
-        String x = "";
-        String y = "";
+            String x = "";
+            String y = "";
 
-        while(!inputCorrect) {
-            x = sc.next();
-            y = sc.next();
-            System.out.println("Enter the coordinates: " + x + " " + y);
-            int indexForCharAt = userInputTransformedToCharAt(x, y);
+            while(!inputCorrect) {
+                x = sc.next();
+                y = sc.next();
+                System.out.println("Enter the coordinates: " + x + " " + y);
+                int indexForCharAt = userInputTransformedToCharAt(x, y);
 
-            if (input.charAt(indexForCharAt) == 'X' || input.charAt(indexForCharAt) == 'O') {
-                System.out.println("This cell is occupied! Choose another one!");
-            } else if (Integer.parseInt(x) > 3 || Integer.parseInt(y) > 3) {
-                System.out.println("Coordinates should be from 1 to 3!");
-            } else if (userInputIsNonNumeric(x, y)) {
-                System.out.println("You should enter numbers!");
-            } else {
-                inputCorrect = true;
+                if (input.charAt(indexForCharAt) == 'X' || input.charAt(indexForCharAt) == 'O') {
+                    System.out.println("This cell is occupied! Choose another one!");
+                } else if (Integer.parseInt(x) > 3 || Integer.parseInt(y) > 3) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                } else if (userInputIsNonNumeric(x, y)) {
+                    System.out.println("You should enter numbers!");
+                } else {
+                    inputCorrect = true;
+                }
             }
+
+            input = replaceChar(input, 'X', userInputTransformedToCharAt(x, y));
+
+            System.out.println("---------");
+            System.out.println("| " + input.charAt(0) + " " + input.charAt(1) + " " + input.charAt(2) + " |");
+            System.out.println("| " + input.charAt(3) + " " + input.charAt(4) + " " + input.charAt(5) + " |");
+            System.out.println("| "+ input.charAt(6) + " " + input.charAt(7) + " " + input.charAt(8) + " |");
+            System.out.println("---------");
+
+            gameOver = checkForWinner(input);
         }
-
-        input = replaceChar(input, 'X', userInputTransformedToCharAt(x, y));
-
-        System.out.println("---------");
-        System.out.println("| " + input.charAt(0) + " " + input.charAt(1) + " " + input.charAt(2) + " |");
-        System.out.println("| " + input.charAt(3) + " " + input.charAt(4) + " " + input.charAt(5) + " |");
-        System.out.println("| "+ input.charAt(6) + " " + input.charAt(7) + " " + input.charAt(8) + " |");
-        System.out.println("---------");
 
     }
 
@@ -99,24 +101,9 @@ public class Main {
         return isNonNumeric;
     }
 
-    public static void checkForWinner(String input) {
+    public static boolean checkForWinner(String input) {
         boolean xWins = false;
         boolean oWins = false;
-        boolean impossible = false;
-        int xCount = 0;
-        int oCount = 0;
-
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i) == 'X') {
-                xCount++;
-            } else if (input.charAt(i) == 'O') {
-                oCount++;
-            }
-        }
-
-        if (Math.abs(xCount - oCount) >= 2) {
-            impossible = true;
-        }
 
         // X wins
          if (input.charAt(0) == 'X' && input.charAt(1) == 'X' && input.charAt(2) == 'X' ||
@@ -144,14 +131,14 @@ public class Main {
 
          if (xWins && !oWins) {
              System.out.println("X wins");
+             return true;
          } else if (oWins && !xWins) {
              System.out.println("O wins");
-         } else if (input.contains("_") && !xWins && !oWins && !impossible) {
-            System.out.println("Game not finished");
-        } else if (!input.contains("_") && !xWins && !oWins) {
-            System.out.println("Draw");
-        } else if ((xWins && oWins) || impossible) {
-            System.out.println("Impossible");
-        }
+             return true;
+         } else if (!input.contains("_") && !xWins && !oWins) {
+             System.out.println("Draw");
+             return true;
+         }
+        return false;
     }
 }
